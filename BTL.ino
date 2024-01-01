@@ -17,11 +17,20 @@ float updateRate;
 int highScore = 0;
 const int buttonPins[] = {2, 3, 4, 5};
 bool gameOver;
-bool appleDisplay = true;
+bool isAppleDisplayed;
+bool isDisplayChanged;
 byte gameMap[MAP_SIZE]; // The 8 rows of the LED Matrix
 
 #define OLED_ADDR   0x3C
 Adafruit_SSD1306 display(128, 64, &Wire, -1);
+
+const int DIN = 11;
+const int CS = 10;
+const int CLK = 13;
+LedControl lc = LedControl(DIN, CLK, CS, 1);
+
+// Variables To Handle The Game Time
+float oldTime, timer;
 
 struct Point {
   int rPos; // The row of the point
@@ -58,20 +67,23 @@ void emitSound(int condition) {
 }
 
 struct Snake {
-  Point head;     // The head of the snake's head
   Point body[MAX_SCORE]; // An array that contains the coordinates of the the snake's body
   int len;         // The length of the snake 
   int dir[2];      // A direction to move the snake along
 
+  Point getHead() {
+    return body[len - 1];
+  }
+
   void move() {
-    Point newHead = head.add(dir[0], dir[1]);
+    Point newHead = getHead().add(dir[0], dir[1]);
   
     // Check if the Snake hits itself
     for(int i = 0; i < len; i++) {
       if(body[i].equals(newHead)) {
         emitSound(DIE);
         gameOver = true;
-        display.clearDisplay();
+        isDisplayChanged = true;
         return;
       }
     }
@@ -85,7 +97,7 @@ struct Snake {
       }
       apple = genApple();
       updateRate += 0.1;
-      display.clearDisplay();
+      isDisplayChanged = true;
     } else {
       // Shift the body forward
       for(int i = 1; i < len; i++)
@@ -94,27 +106,19 @@ struct Snake {
 
     // Append the new head to the body
     body[len - 1] = newHead;
-    head = newHead;
   }
 };
 Snake snake;
 
-//MAX72XX led Matrix
-const int DIN = 11;
-const int CS = 10;
-const int CLK = 13;
-LedControl lc = LedControl(DIN, CLK, CS, 1);
-
-// Variables To Handle The Game Time
-float oldTime, timer;
-
 void initGame() {
   display.clearDisplay();
-  snake = {{1, 5}, {{0, 5}, {1, 5}}, 2, {1, 0}}; // Initialize a snake object
+  snake = {{{0, 5}, {1, 5}}, 2, {1, 0}}; // Initialize a snake object
   apple = genApple(); // Initialize an apple object
   oldTime = millis();
   timer = 0;
   updateRate = INIT_UPDATE_RATE;
+  isAppleDisplayed = true;
+  isDisplayChanged = true;
   gameOver = false;
 }
 
@@ -122,11 +126,8 @@ void setup() {
   display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR);
   display.setTextColor(WHITE);
   display.setTextSize(1);
+
   pinMode(SPEAKER_PIN, OUTPUT);
-  /*
-  The MAX72XX is in power-saving mode on startup,
-  we have to do a wakeup call
-  */
   lc.shutdown(0, false);
   /* Set the brightness to a medium values */
   lc.setIntensity(0, 8);
@@ -161,14 +162,18 @@ Point genApple() {
   return newPoint;
 }
 
-void checkGameState() {
-  int score = snake.len;
-  if (score < MAX_SCORE) {
-    printDisplay(1, ("Your score: " + String(score)).c_str());
-    printDisplay(2, ("High score: " + String(highScore)).c_str());
-  } else {
-    emitSound(WIN);
-    printDisplay(1, "You win!");
+void displayGameState() {
+  if (isDisplayChanged) {
+    display.clearDisplay();
+    int score = snake.len;
+    if (score < MAX_SCORE) {
+      printDisplay(1, ("Your score: " + String(score)).c_str());
+      printDisplay(2, ("High score: " + String(highScore)).c_str());
+    } else {
+      emitSound(WIN);
+      printDisplay(1, "You win!");
+    }
+    isDisplayChanged = false;
   }
 }
 
@@ -200,11 +205,11 @@ void Update() {
   float dt = currentTime - oldTime;
   oldTime = currentTime;
   timer += dt;
-  if(timer < DELAY / (2 * updateRate) && !appleDisplay) {
-    appleDisplay = true;
+  if(timer < DELAY / (2 * updateRate) && !isAppleDisplayed) {
+    isAppleDisplayed = true;
   }
-  if(timer > DELAY / (2 * updateRate) && appleDisplay) {
-    appleDisplay = false;
+  if(timer > DELAY / (2 * updateRate) && isAppleDisplayed) {
+    isAppleDisplayed = false;
   }
   if(timer > DELAY / updateRate){
     timer = 0;
@@ -219,7 +224,7 @@ void Render() {
   for(int i = 0; i < snake.len; i++)
     gameMap[snake.body[i].rPos] |= 128 >> snake.body[i].cPos;
   
-  if(appleDisplay)
+  if(isAppleDisplayed)
     gameMap[apple.rPos] |= 128 >> apple.cPos;
 
   for(int i = 0; i < MAP_SIZE; i++)
@@ -234,9 +239,9 @@ void loop() {
     if(isClicked())
       initGame();
   } else {
-    checkGameState();
     readInstruction();
     Update();
     Render();
+    displayGameState();
   }
 }
