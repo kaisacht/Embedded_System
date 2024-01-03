@@ -24,6 +24,7 @@ byte gameMap[MAP_SIZE]; // The 8 rows of the LED Matrix
 #define OLED_ADDR   0x3C
 Adafruit_SSD1306 display(128, 64, &Wire, -1);
 
+
 const int DIN = 13;
 const int CS = 11;
 const int CLK = 10;
