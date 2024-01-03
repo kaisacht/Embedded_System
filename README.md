@@ -9,6 +9,7 @@
 - 4 nút điều khiển (Lên, Xuống, Trái, Phải)
 - 1 loa 
 - 1 oled ssd1306
+
 Sơ đồ ghép nối các thiết bị:
 ![Sơ đồ ghép nối các thiết bị](assets/diagram.png)
 
