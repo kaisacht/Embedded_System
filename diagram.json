@@ -14,8 +14,8 @@
     {
       "type": "wokwi-pushbutton",
       "id": "btn1",
-      "top": 44.6,
-      "left": 403.2,
+      "top": 35,
+      "left": 374.4,
       "attrs": { "color": "green" }
     },
     {
@@ -29,14 +29,14 @@
       "type": "wokwi-pushbutton",
       "id": "btn3",
       "top": -80.2,
-      "left": 393.6,
+      "left": 384,
       "attrs": { "color": "red" }
     },
     {
       "type": "wokwi-pushbutton",
       "id": "btn4",
-      "top": -13,
-      "left": 470.4,
+      "top": -22.6,
+      "left": 451.2,
       "attrs": { "color": "yellow" }
     },
     {
@@ -49,8 +49,8 @@
     {
       "type": "board-ssd1306",
       "id": "oled1",
-      "top": 41.54,
-      "left": -182.17,
+      "top": 166.34,
+      "left": -172.57,
       "attrs": { "i2cAddress": "0x3c" }
     }
   ],
@@ -62,18 +62,18 @@
     [ "matrix1:V+", "uno:5V", "green", [ "h96", "v355.2", "h-115.2" ] ],
     [ "btn1:1.l", "uno:GND.1", "green", [ "h-86.4", "v86.4", "h-105.6" ] ],
     [ "btn1:2.r", "uno:5", "green", [ "h9.8", "v19.4", "h-134.4", "v57.6", "h-28.8" ] ],
-    [ "btn3:1.l", "uno:GND.1", "green", [ "h-134.4", "v134.4", "h-105.6" ] ],
     [ "btn3:2.r", "uno:4", "red", [ "h86.6", "v144.2", "h-288" ] ],
-    [ "btn2:1.l", "uno:GND.1", "blue", [ "h-19.2", "v9.6", "h-163.2", "v57.6", "h-115.2" ] ],
     [ "btn2:2.r", "uno:3", "white", [ "h19.4", "v77", "h-268.8", "v-9.6" ] ],
-    [ "btn4:1.l", "uno:GND.1", "green", [ "v28.8", "h-307.5" ] ],
     [ "btn4:2.r", "uno:2", "yellow", [ "h29", "v38.6", "h-220.8" ] ],
     [ "bz1:2", "uno:8", "green", [ "v38.4", "h57.2" ] ],
-    [ "bz1:1", "uno:GND.1", "yellow", [ "v48", "h9.6" ] ],
+    [ "bz1:1", "uno:GND.1", "black", [ "v48", "h9.6" ] ],
     [ "oled1:GND", "uno:GND.1", "black", [ "v-67.2", "h316.8" ] ],
     [ "oled1:VCC", "uno:3.3V", "red", [ "v211.2", "h336.15" ] ],
     [ "oled1:SCL", "uno:A5", "green", [ "v307.2", "h441.9", "v-9.6" ] ],
-    [ "oled1:SDA", "uno:A4", "green", [ "v249.6", "h412.87" ] ]
+    [ "oled1:SDA", "uno:A4", "green", [ "v249.6", "h412.87" ] ],
+    [ "btn2:1.l", "uno:GND.1", "black", [ "h0" ] ],
+    [ "btn4:1.l", "uno:GND.1", "black", [ "h0" ] ],
+    [ "btn3:1.l", "uno:GND.1", "black", [ "h-144", "v115.2", "h-67.5" ] ]
   ],
   "dependencies": {}
 }

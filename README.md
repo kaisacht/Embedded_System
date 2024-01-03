@@ -2,7 +2,7 @@
 [Project trên Wokwi](https://wokwi.com/projects/383641267625734145)
 
 ## Video demo:
-![Video demo](assets/demo.gif)
+![Video demo](assets/demo.mp4)
 ## Phần cứng
 - 1 Arduino Uno
 - 1 ma trận LED 8x8
